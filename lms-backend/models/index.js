@@ -3,6 +3,7 @@ import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import { DB_CONFIG } from '../config/db.config.js';
 import UserModel from './user.js'; // import more models as you add them
+import BookModel from './book.js';
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.User = UserModel(sequelize, Sequelize.DataTypes); // initialize User
+
+db.Book = BookModel(sequelize, Sequelize.DataTypes);
 
 // Future model associations can go here
 // ex: db.Book.belongsTo(db.User);

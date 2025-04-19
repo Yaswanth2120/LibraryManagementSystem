@@ -4,11 +4,12 @@ import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 import { DB_CONFIG } from './config/db.config.js';
 import authRoutes from './routes/authRoutes.js';
+import bookRoutes from './routes/bookRoutes.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
 // Middleware
 app.use(express.json());
@@ -42,6 +43,7 @@ sequelize.authenticate()
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/books', bookRoutes);
 
 // Root route
 app.get('/', (req, res) => {
