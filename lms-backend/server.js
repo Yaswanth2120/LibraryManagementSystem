@@ -2,6 +2,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
+import cors from 'cors';
 import { DB_CONFIG } from './config/db.config.js';
 import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
@@ -40,6 +41,8 @@ sequelize.authenticate()
   .catch((err) => {
     console.error('DB connection failed:', err);
   });
+
+  app.use(cors());
 
 // Routes
 app.use('/api/auth', authRoutes);
