@@ -3,7 +3,7 @@
 import db from '../models/index.js';
 const Book = db.Book;
 
-// 🔽 GET all books (public)
+// GET all books (public)
 export const getAllBooks = async (req, res) => {
   try {
     const books = await Book.findAll();
@@ -13,7 +13,7 @@ export const getAllBooks = async (req, res) => {
   }
 };
 
-// ➕ POST add a new book (admin/librarian only)
+// POST add a new book (admin/librarian only)
 export const addBook = async (req, res) => {
   const { title, author, isbn } = req.body;
 
@@ -25,7 +25,7 @@ export const addBook = async (req, res) => {
   }
 };
 
-// ✏️ PUT update book (admin/librarian only)
+// PUT update book (admin/librarian only)
 export const updateBook = async (req, res) => {
   const { id } = req.params;
   const { title, author, isbn, availability } = req.body;
@@ -46,7 +46,7 @@ export const updateBook = async (req, res) => {
   }
 };
 
-// ❌ DELETE book (admin/librarian only)
+// DELETE book (admin/librarian only)
 export const deleteBook = async (req, res) => {
   const { id } = req.params;
 

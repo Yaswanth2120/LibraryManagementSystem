@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useRef } from "react"
 import lottie from "lottie-web"
 import { Link } from "react-router-dom"
@@ -21,7 +23,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen">
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -30,20 +32,21 @@ export default function Home() {
               Welcome to <span className="text-blue-600 dark:text-blue-400">Librisys</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-              The modern library management system designed for students, librarians, and administrators.
+              A comprehensive library management solution designed to streamline operations, enhance user experience,
+              and simplify resource management for educational institutions.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 to="/login"
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Student Login
               </Link>
               <Link
-                to="/admin-login"
-                className="px-6 py-3 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-medium rounded-lg border border-blue-600 dark:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors"
+                to="/books"
+                className="px-6 py-3 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-medium rounded-lg border border-blue-600 dark:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
-                Staff Login
+                Browse Books
               </Link>
             </div>
           </div>
@@ -51,9 +54,30 @@ export default function Home() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">About LibriSys</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+            LibriSys is a state-of-the-art library management system built to meet the evolving needs of modern
+            educational institutions. Our platform combines powerful resource management tools with an intuitive user
+            interface to create a seamless experience for both students and librarians.
+          </p>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Founded with the mission to digitize and streamline library operations, LibriSys helps institutions manage
+            their collections efficiently while providing students with easy access to learning resources. Our system
+            handles everything from book cataloging and circulation to user management and reporting.
+          </p>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="features">
-        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Features</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">Powerful Features</h2>
+        <p className="text-lg text-center text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+          LibriSys offers a comprehensive suite of features designed to modernize library management and enhance the
+          user experience for students and staff alike.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
@@ -72,9 +96,10 @@ export default function Home() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 dark:text-white">Easy Book Management</h3>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Comprehensive Catalog</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Efficiently manage your library's collection with our intuitive book management system.
+              Manage your entire collection with our powerful cataloging system. Add, edit, and organize books with
+              detailed metadata, custom categories, and advanced search capabilities.
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -94,9 +119,10 @@ export default function Home() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 dark:text-white">User-Friendly Interface</h3>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Seamless Borrowing</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Designed with users in mind, our interface makes library management simple for everyone.
+              Our streamlined borrowing process makes it easy for students to request books and for librarians to manage
+              loans. Automated reminders help reduce late returns and lost items.
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -116,9 +142,153 @@ export default function Home() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold mb-2 dark:text-white">Advanced Reporting</h3>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Insightful Analytics</h3>
             <p className="text-gray-600 dark:text-gray-300">
-              Generate detailed reports on book circulation, user activity, and more with just a few clicks.
+              Gain valuable insights with comprehensive reporting tools. Track circulation patterns, popular titles, and
+              user activity to make data-driven decisions about your collection.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-blue-600 dark:text-blue-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Secure Access Control</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Role-based access ensures that users only see what they need. Students can browse and borrow, while
+              librarians have additional tools for managing the collection and requests.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-blue-600 dark:text-blue-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Automated Workflows</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Save time with automated processes for common tasks like check-ins, check-outs, and overdue notifications.
+              Let the system handle routine operations while staff focuses on service.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-blue-600 dark:text-blue-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold mb-2 dark:text-white">Integrated Digital Resources</h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Manage both physical and digital resources in one place. Link to e-books, journals, and online databases
+              to provide a complete library experience for your users.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400 block mb-2">10,000+</span>
+            <span className="text-gray-600 dark:text-gray-300">Books Managed</span>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400 block mb-2">500+</span>
+            <span className="text-gray-600 dark:text-gray-300">Institutions</span>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400 block mb-2">50,000+</span>
+            <span className="text-gray-600 dark:text-gray-300">Active Users</span>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <span className="text-4xl font-bold text-blue-600 dark:text-blue-400 block mb-2">99.9%</span>
+            <span className="text-gray-600 dark:text-gray-300">Uptime</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">What Our Users Say</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-4">
+                <span className="text-blue-600 dark:text-blue-400 font-bold">JD</span>
+              </div>
+              <div>
+                <h3 className="font-semibold dark:text-white">Jane Doe</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Head Librarian</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 italic">
+              "LibriSys has transformed how we manage our university library. The automated workflows have saved our
+              staff countless hours, and students love the easy borrowing process."
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-4">
+                <span className="text-blue-600 dark:text-blue-400 font-bold">MS</span>
+              </div>
+              <div>
+                <h3 className="font-semibold dark:text-white">Michael Smith</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Student</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 italic">
+              "As a student, I love being able to browse books online and place holds. The system is intuitive and makes
+              finding research materials so much easier than before."
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-4">
+                <span className="text-blue-600 dark:text-blue-400 font-bold">AR</span>
+              </div>
+              <div>
+                <h3 className="font-semibold dark:text-white">Amanda Rodriguez</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">School Administrator</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300 italic">
+              "The analytics provided by LibriSys have helped us make better decisions about our collection development.
+              We now know exactly what resources our students need."
             </p>
           </div>
         </div>
@@ -126,28 +296,20 @@ export default function Home() {
 
       {/* Call to Action */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-blue-600 dark:bg-blue-800 rounded-2xl p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
+        <div className="bg-blue-600 dark:bg-blue-800 rounded-2xl p-8 md:p-12 text-center text-white shadow-lg">
+          <h2 className="text-3xl font-bold mb-4">Ready to transform your library?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of libraries already using Librisys to streamline their operations.
+            Join thousands of institutions already using LibriSys to streamline their operations and enhance the student
+            experience.
           </p>
-          <div className="flex justify-center gap-4 flex-wrap">
-            <Link
-              to="/login"
-              className="px-6 py-3 bg-white text-blue-600 font-medium rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              Student Login
-            </Link>
-            <Link
-              to="/admin-login"
-              className="px-6 py-3 bg-transparent text-white font-medium rounded-lg border border-white hover:bg-blue-700 dark:hover:bg-blue-900 transition-colors"
-            >
-              Staff Login
-            </Link>
-          </div>
+          <Link
+            to="/login"
+            className="px-8 py-4 bg-white text-blue-600 font-medium rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-block"
+          >
+            Get Started Today
+          </Link>
         </div>
       </section>
     </div>
   )
 }
-

@@ -6,6 +6,8 @@ import cors from 'cors';
 import { DB_CONFIG } from './config/db.config.js';
 import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
+import borrowRoutes from './routes/borrowRoutes.js';
+
 
 dotenv.config();
 
@@ -47,8 +49,10 @@ sequelize.authenticate()
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/borrow', borrowRoutes);
+
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('📚 LibriSys API is running...');
+  res.send('LibriSys API is running...');
 });
