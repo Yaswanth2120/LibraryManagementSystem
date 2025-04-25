@@ -7,28 +7,48 @@ function MyRequestsPage() {
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const [userName, setUserName] = useState("")
   const [filter, setFilter] = useState("all")
   const token = localStorage.getItem("token")
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        setLoading(true)
-        const res = await api.get("/borrow/my", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        setRequests(res.data)
-        setError("")
-      } catch (err) {
-        setError("Failed to load your requests. Please try again.")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+  const handleReturn = async (id) => {
+    try {
+      await api.put(`/borrow/${id}/return`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMessage("Book returned!");
+      fetchRequests(); // refresh
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Return failed");
     }
+  }
 
-    fetchRequests()
-  }, [token])
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/borrow/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRequests(res.data);
+      setError("");
+
+      // Fetch user info
+      const userRes = await api.get("/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserName(userRes.data.name);
+    } catch (err) {
+      setError("Failed to load your requests. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchRequests();
+  }, [token]);
 
   const filteredRequests = filter === "all" ? requests : requests.filter((req) => req.status === filter)
 
@@ -47,7 +67,7 @@ function MyRequestsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-          <span className="mr-2">📥</span> My Borrow Requests
+          <span className="mr-2">📥</span> Welcome, {userName || "Student"}
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">Track the status of your book borrow requests.</p>
       </div>
@@ -58,48 +78,27 @@ function MyRequestsPage() {
         </div>
       )}
 
+      {message && (
+        <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <p className="text-green-600 dark:text-green-400">{message}</p>
+        </div>
+      )}
+
       {/* Filter Controls */}
       <div className="mb-6 flex flex-wrap gap-2">
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === "all"
-              ? "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
-              : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-          }`}
-        >
-          All Requests
-        </button>
-        <button
-          onClick={() => setFilter("pending")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === "pending"
-              ? "bg-yellow-500 text-white"
-              : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
-          }`}
-        >
-          Pending
-        </button>
-        <button
-          onClick={() => setFilter("approved")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === "approved"
-              ? "bg-green-500 text-white"
-              : "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
-          }`}
-        >
-          Approved
-        </button>
-        <button
-          onClick={() => setFilter("rejected")}
-          className={`px-4 py-2 rounded-lg text-sm font-medium ${
-            filter === "rejected"
-              ? "bg-red-500 text-white"
-              : "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
-          }`}
-        >
-          Rejected
-        </button>
+        {["all", "pending", "approved", "rejected"].map((type) => (
+          <button
+            key={type}
+            onClick={() => setFilter(type)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              filter === type
+                ? `bg-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-500 text-white`
+                : `bg-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-100 text-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-700 dark:bg-${type}-900/20 dark:text-${type}-400`
+            }`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
       </div>
 
       {loading ? (
@@ -130,13 +129,24 @@ function MyRequestsPage() {
             >
               <div className="flex flex-wrap justify-between items-start gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Book ID: {req.bookId}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                    Title: {req.book?.title || `Book ID: ${req.bookId}`}
+                  </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     <span className="font-medium">Request ID:</span> {req.id}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     <span className="font-medium">Date:</span> {new Date().toLocaleDateString()}
                   </p>
+
+                  {req.status === "approved" && (
+                    <button
+                      onClick={() => handleReturn(req.id)}
+                      className="mt-2 bg-yellow-500 text-white px-3 py-1 rounded"
+                    >
+                      Return
+                    </button>
+                  )}
                 </div>
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeClass(req.status)}`}

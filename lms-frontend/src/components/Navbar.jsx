@@ -57,20 +57,23 @@ function Navbar() {
               </>
             )}
 
-            {token && (role === "librarian" || role === "admin") && (
+            {token && role === "librarian" && (
               <>
-                <Link
-                  to="/librarian/dashboard"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/librarian/requests"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  All Requests
-                </Link>
+                <Link to="/librarian/dashboard"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  Dashboard</Link>
+                <Link to="/librarian/requests"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  All Requests</Link>
+              </>
+            )}
+
+            {token && role === "admin" && (
+              <>
+                <Link to="/admin/dashboard"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Dashboard</Link>
+                <Link to="/librarian/requests"
+                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">All Requests</Link>
               </>
             )}
 
@@ -163,24 +166,24 @@ function Navbar() {
             </>
           )}
 
-          {token && (role === "librarian" || role === "admin") && (
-            <>
-              <Link
-                to="/librarian/dashboard"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/librarian/requests"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                All Requests
-              </Link>
-            </>
+          {token && role === "librarian" && (
+            <Link
+              to="/librarian/dashboard"
+              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Dashboard
+            </Link>
           )}
+
+          {token && role === "admin" && (
+            <Link
+              to="/admin/dashboard"
+              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Dashboard
+            </Link>
+          )}
+
 
           {token ? (
             <button
