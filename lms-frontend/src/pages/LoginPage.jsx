@@ -1,7 +1,7 @@
 import { useState } from "react"
 import api from "../services/api.js"
 import { useNavigate, Link } from "react-router-dom"
-import {useAuth} from "../context/AuthContext.jsx"
+import  useAuth from "../context/useAuth.js"
 
 function LoginPage() {
   const [email, setEmail] = useState("")
@@ -16,13 +16,13 @@ function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError("")
-
+    
     try {
       const res = await api.post("/auth/login", { email, password })
-    
-      login(res.data.token, res.data.role);
-    
+
+      login(res.data.token, res.data.role, res.data.name);
       navigate(`/${res.data.role}/dashboard`);  
+
     } catch (err) {
       console.error("Login error:", err) 
       setError(err.response?.data?.message || "Login failed")

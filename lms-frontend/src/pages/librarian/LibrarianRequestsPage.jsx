@@ -1,4 +1,3 @@
-"use client"
 
 import { useEffect, useState, useCallback } from "react"
 import api from "../../services/api.js"

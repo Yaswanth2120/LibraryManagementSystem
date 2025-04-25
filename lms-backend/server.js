@@ -7,6 +7,7 @@ import { DB_CONFIG } from './config/db.config.js';
 import authRoutes from './routes/authRoutes.js';
 import bookRoutes from './routes/bookRoutes.js';
 import borrowRoutes from './routes/borrowRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 
 dotenv.config();
@@ -50,6 +51,7 @@ sequelize.authenticate()
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/borrow', borrowRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 // Root route

@@ -1,6 +1,5 @@
-"use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import api from "../../services/api.js"
 
 function MyRequestsPage() {
@@ -10,7 +9,31 @@ function MyRequestsPage() {
   const [message, setMessage] = useState("")
   const [userName, setUserName] = useState("")
   const [filter, setFilter] = useState("all")
-  const token = localStorage.getItem("token")
+
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
+
+  const fetchRequests = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      setLoading(true);
+      const res = await api.get("/borrow/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setRequests(res.data);
+      setError("");
+
+      const userRes = await api.get("/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserName(userRes.data.name);
+    } catch (err) {
+      setError("Failed to load your requests. Please try again.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
   const handleReturn = async (id) => {
     try {
@@ -24,31 +47,10 @@ function MyRequestsPage() {
     }
   }
 
-  const fetchRequests = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get("/borrow/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setRequests(res.data);
-      setError("");
-
-      // Fetch user info
-      const userRes = await api.get("/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUserName(userRes.data.name);
-    } catch (err) {
-      setError("Failed to load your requests. Please try again.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
     fetchRequests();
-  }, [token]);
+  }, [fetchRequests]);
+
 
   const filteredRequests = filter === "all" ? requests : requests.filter((req) => req.status === filter)
 
