@@ -8,6 +8,8 @@ import LibrarianRequestsPage from "./pages/librarian/LibrarianRequestsPage.jsx"
 import StudentDashboard from "./pages/student/StudentDashboard.jsx"
 import LibrarianDashboard from "./pages/librarian/LibrarianDashboard.jsx"
 import Navbar from "./components/Navbar.jsx"
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
+import AdminBooksPage from "./pages/admin/AdminBooksPage.jsx";
 
 import PrivateRoute from "./routes/PrivateRoute.jsx"
 import RoleRoute from "./routes/RoleRoute.jsx"
@@ -67,11 +69,32 @@ function App() {
           <Route
             path="/librarian/dashboard"
             element={
-              <RoleRoute allowed={["librarian", "admin"]}>
+              <RoleRoute allowed={["librarian"]}>
                 <LibrarianDashboard />
               </RoleRoute>
             }
           />
+
+          {/* Admin Routes */}
+
+          <Route
+            path="/admin/dashboard"
+            element={
+              <RoleRoute allowed={['admin']}>
+                <AdminDashboard />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/admin/books"
+            element={
+              <RoleRoute allowed={['admin', 'librarian']}>
+                <AdminBooksPage />
+              </RoleRoute>
+            }
+          />
+
         </Routes>
       </main>
     </div>

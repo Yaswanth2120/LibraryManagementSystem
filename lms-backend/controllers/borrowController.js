@@ -99,3 +99,39 @@ export const updateBorrowStatus = async (req, res) => {
     });
   }
 };
+
+export const returnBorrowedBook = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const request = await db.BorrowRequest.findByPk(id);
+
+    if (!request) {
+      return res.status(404).json({ message: 'Borrow request not found' });
+    }
+
+    if (request.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized to return this book' });
+    }
+
+    if (request.status !== 'approved') {
+      return res.status(400).json({ message: 'Only approved books can be returned' });
+    }
+
+    // Update borrow request status
+    request.status = 'returned';
+    await request.save();
+
+    // Make the book available again
+    const book = await db.Book.findByPk(request.bookId);
+    if (book) {
+      book.availability = true;
+      await book.save();
+    }
+
+    res.json({ message: 'Book returned successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Return failed', error: err.message });
+  }
+};
+

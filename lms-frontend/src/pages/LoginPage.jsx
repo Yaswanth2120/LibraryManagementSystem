@@ -22,11 +22,7 @@ function LoginPage() {
     
       login(res.data.token, res.data.role);
     
-      if (res.data.role === "admin" || res.data.role === "librarian") {
-        navigate("/librarian/dashboard")
-      } else {
-        navigate("/student/dashboard")
-      }
+      navigate(`/${res.data.role}/dashboard`);  
     } catch (err) {
       console.error("Login error:", err) 
       setError(err.response?.data?.message || "Login failed")
