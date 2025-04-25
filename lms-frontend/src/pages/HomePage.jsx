@@ -1,11 +1,12 @@
-
 import { useEffect, useRef } from "react"
 import lottie from "lottie-web"
 import { Link } from "react-router-dom"
 import bookAnimation from "../assets/book-animation.json"
+import useAuth from "../context/useAuth.js"
 
 export default function Home() {
   const animationContainer = useRef(null)
+  const { token, role } = useAuth()
 
   useEffect(() => {
     if (animationContainer.current) {
@@ -35,12 +36,27 @@ export default function Home() {
               and simplify resource management for educational institutions.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                to="/login"
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Student Login
-              </Link>
+              {!token ? (
+                <Link
+                  to="/login"
+                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Student Login
+                </Link>
+              ) : (
+                <Link
+                  to={
+                    role === "student"
+                      ? "/student/borrow"
+                      : role === "librarian"
+                        ? "/librarian/dashboard"
+                        : "/admin/dashboard"
+                  }
+                  className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  📚 Go to Dashboard
+                </Link>
+              )}
               <Link
                 to="/books"
                 className="px-6 py-3 bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 font-medium rounded-lg border border-blue-600 dark:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -302,10 +318,18 @@ export default function Home() {
             experience.
           </p>
           <Link
-            to="/login"
-            className="px-8 py-4 bg-white text-blue-600 font-medium rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-block"
+            to={
+              !token
+                ? "/login"
+                : role === "student"
+                  ? "/student/borrow"
+                  : role === "librarian"
+                    ? "/librarian/dashboard"
+                    : "/admin/dashboard"
+            }
+            className="px-8 py-4 bg-white text-blue-600 font-medium rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 inline-block shadow-md hover:shadow-lg"
           >
-            Get Started Today
+            {!token ? "Get Started Today" : "📚 Go to Dashboard"}
           </Link>
         </div>
       </section>
