@@ -10,6 +10,7 @@ import LibrarianDashboard from "./pages/librarian/LibrarianDashboard.jsx"
 import Navbar from "./components/Navbar.jsx"
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import AdminBooksPage from "./pages/admin/AdminBooksPage.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 
 import PrivateRoute from "./routes/PrivateRoute.jsx"
 import RoleRoute from "./routes/RoleRoute.jsx"
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route
             path="/books"
             element={
