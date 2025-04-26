@@ -84,13 +84,22 @@ function Navbar() {
                 Logout
               </button>
             ) : (
-              <Link
-                to="/login"
-                className="ml-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Login
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  className="ml-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="ml-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  Register
+                </Link>
+              </>
             )}
+
           </div>
 
           {/* Mobile menu button */}
@@ -187,22 +196,32 @@ function Navbar() {
           {token ? (
             <button
               onClick={() => {
-                handleLogout()
-                setIsMenuOpen(false)
+                handleLogout();
+                setIsMenuOpen(false);
               }}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               Logout
             </button>
           ) : (
-            <Link
-              to="/login"
-              className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Login
-            </Link>
+            <>
+              <Link
+                to="/login"
+                className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="block px-3 py-2 rounded-md text-base font-medium text-green-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
           )}
+
         </div>
       </div>
     </nav>
