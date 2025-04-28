@@ -10,7 +10,12 @@ function BooksPage() {
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  const storedUser = localStorage.getItem("user");
+  
+  if (storedUser && storedUser !== "undefined") {
+    user = JSON.parse(storedUser);
+  }
   const navigate = useNavigate(); // For navigation
 
   useEffect(() => {
