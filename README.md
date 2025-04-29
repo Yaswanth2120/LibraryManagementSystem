@@ -88,9 +88,9 @@ Frontend running at: http://localhost:5173
 ## 🧪 Sample Users
 | Name          | Email                  | Password     | Role      |
 |---------------|-------------------------|--------------|-----------|
-| Student A     | stud1@student.com        | student123   | Student   |
+| Student A     | student1@student.com        | student123   | Student   |
 | Librarian One | lib1@librarian.com        | librarian123 | Librarian |
-| Admin One     | admin1@admin.com          | admin123     | Admin     |
+| Admin User     | admin@admin.com          | admin123     | Admin     |
 
 ## 💡 Future Enhancements
 🌙 Dark Mode Toggle (In progress)
