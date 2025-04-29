@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react"
 import api from "../../services/api.js"
 
@@ -27,8 +26,10 @@ function LibrarianRequestsPage() {
 
   const handleDecision = async (id, status) => {
     try {
-      await api.put(`/borrow/${id}/status`, { status }, { headers: { Authorization: `Bearer ${token}` } })
-      fetchRequests() // refresh after update
+      await api.put(`/borrow/${id}/status`, { status }, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      })
+      fetchRequests()
     } catch (err) {
       setError("Failed to update request status. Please try again.")
       console.error(err)
@@ -39,7 +40,9 @@ function LibrarianRequestsPage() {
     fetchRequests()
   }, [fetchRequests])
 
-  const filteredRequests = filter === "all" ? requests : requests.filter((req) => req.status === filter)
+  const filteredRequests = filter === "all" 
+    ? requests 
+    : requests.filter((req) => req.status === filter)
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -113,23 +116,21 @@ function LibrarianRequestsPage() {
 
       {loading ? (
         <div className="space-y-4">
-          {Array(3)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm bg-white dark:bg-gray-800 animate-pulse"
-              >
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
-                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
-                <div className="flex gap-2">
-                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
-                </div>
+          {Array(3).fill(0).map((_, i) => (
+            <div
+              key={i}
+              className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm bg-white dark:bg-gray-800 animate-pulse"
+            >
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2"></div>
+              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
+              <div className="flex gap-2">
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       ) : filteredRequests.length === 0 ? (
         <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -144,16 +145,15 @@ function LibrarianRequestsPage() {
             >
               <div className="flex flex-wrap justify-between items-start gap-4 mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Request #{req.id}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                    {req.Book?.title || 'Unknown Book'}
+                  </h3>
                   <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
                     <p>
-                      <span className="font-medium">User ID:</span> {req.userId}
+                      <span className="font-medium">Requested by:</span> {req.User?.name || 'User'}
                     </p>
                     <p>
-                      <span className="font-medium">Book ID:</span> {req.bookId}
-                    </p>
-                    <p>
-                      <span className="font-medium">Date:</span> {new Date().toLocaleDateString()}
+                      <span className="font-medium">Date:</span> {new Date(req.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>

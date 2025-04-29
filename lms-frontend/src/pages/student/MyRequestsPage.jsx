@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react"
 import api from "../../services/api.js"
 
@@ -28,7 +27,11 @@ function MyRequestsPage() {
       });
       setUserName(userRes.data.name);
     } catch (err) {
-      setError("Failed to load your requests. Please try again.");
+      setError(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Failed to load your requests. Please try again."
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -43,7 +46,11 @@ function MyRequestsPage() {
       setMessage("Book returned!");
       fetchRequests(); // refresh
     } catch (err) {
-      setMessage(err.response?.data?.message || "Return failed");
+      setMessage(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Return failed"
+      );
     }
   }
 
@@ -51,8 +58,13 @@ function MyRequestsPage() {
     fetchRequests();
   }, [fetchRequests]);
 
+  // Optional: Reset messages on filter change
+  useEffect(() => {
+    setError("");
+    setMessage("");
+  }, [filter]);
 
-  const filteredRequests = filter === "all" ? requests : requests.filter((req) => req.status === filter)
+  const filteredRequests = filter === "all" ? requests : requests.filter((req) => req.status === filter);
 
   const getStatusBadgeClass = (status) => {
     switch (status) {
@@ -64,6 +76,28 @@ function MyRequestsPage() {
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
     }
   }
+
+  // Helper for filter button classes
+  const filterButtonClass = (type) => {
+    const base = "px-4 py-2 rounded-lg text-sm font-medium";
+    const active =
+      type === "pending"
+        ? "bg-yellow-500 text-white"
+        : type === "approved"
+        ? "bg-green-500 text-white"
+        : type === "rejected"
+        ? "bg-red-500 text-white"
+        : "bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900";
+    const inactive =
+      type === "pending"
+        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400"
+        : type === "approved"
+        ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+        : type === "rejected"
+        ? "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400"
+        : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+    return `${base} ${filter === type ? active : inactive}`;
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -92,11 +126,7 @@ function MyRequestsPage() {
           <button
             key={type}
             onClick={() => setFilter(type)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium ${
-              filter === type
-                ? `bg-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-500 text-white`
-                : `bg-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-100 text-${type === "pending" ? "yellow" : type === "approved" ? "green" : type === "rejected" ? "red" : "gray"}-700 dark:bg-${type}-900/20 dark:text-${type}-400`
-            }`}
+            className={filterButtonClass(type)}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}
           </button>
@@ -132,21 +162,22 @@ function MyRequestsPage() {
               <div className="flex flex-wrap justify-between items-start gap-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                    Title: {req.book?.title || `Book ID: ${req.bookId}`}
+                    Title: {req.Book?.title || `Book ID: ${req.bookId}`}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     <span className="font-medium">Request ID:</span> {req.id}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <span className="font-medium">Date:</span> {new Date().toLocaleDateString()}
+                    <span className="font-medium">Date:</span>{" "}
+                    {req.createdAt ? new Date(req.createdAt).toLocaleDateString() : ""}
                   </p>
 
                   {req.status === "approved" && (
                     <button
                       onClick={() => handleReturn(req.id)}
-                      className="mt-2 bg-yellow-500 text-white px-3 py-1 rounded"
+                      className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
                     >
-                      Return
+                      Return Book
                     </button>
                   )}
                 </div>

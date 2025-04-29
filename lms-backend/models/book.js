@@ -1,5 +1,4 @@
 // models/book.js
-
 export default (sequelize, DataTypes) => {
   const Book = sequelize.define('Book', {
     title: {
@@ -16,8 +15,15 @@ export default (sequelize, DataTypes) => {
     availability: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
-    }
+    },
   });
+
+  Book.associate = (models) => {
+    Book.hasMany(models.BorrowRequest, {
+      foreignKey: 'bookId',
+      as: 'BorrowRequests',
+    });
+  };
 
   return Book;
 };

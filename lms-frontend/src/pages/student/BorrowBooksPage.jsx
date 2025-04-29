@@ -1,13 +1,14 @@
-
 import { useEffect, useState } from "react"
 import api from "../../services/api.js"
 
 function BorrowBooksPage() {
   const [books, setBooks] = useState([])
   const [message, setMessage] = useState("")
-  const [messageType, setMessageType] = useState("success") // 'success' or 'error'
+  const [messageType, setMessageType] = useState("success")
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const booksPerPage = 15
   const token = localStorage.getItem("token")
 
   useEffect(() => {
@@ -16,8 +17,8 @@ function BorrowBooksPage() {
         setLoading(true)
         const res = await api.get("/books")
         setBooks(res.data)
-      // eslint-disable-next-line no-unused-vars
       } catch (err) {
+        console.error(err);
         setMessage("Failed to fetch books. Please try again.")
         setMessageType("error")
       } finally {
@@ -33,9 +34,7 @@ function BorrowBooksPage() {
       await api.post(
         "/borrow",
         { bookId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       setMessage("Borrow request sent successfully!")
       setMessageType("success")
@@ -45,12 +44,32 @@ function BorrowBooksPage() {
     }
   }
 
+  // Filter books based on search term
   const filteredBooks = books.filter(
     (book) =>
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.isbn.toLowerCase().includes(searchTerm.toLowerCase()),
+      book.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.isbn?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  // Pagination logic
+  const indexOfLastBook = currentPage * booksPerPage
+  const indexOfFirstBook = indexOfLastBook - booksPerPage
+  const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook)
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage)
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm])
+
+  const goToNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages))
+  }
+
+  const goToPrevPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1))
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -106,59 +125,84 @@ function BorrowBooksPage() {
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array(6)
-            .fill(0)
-            .map((_, i) => (
-              <div
-                key={i}
-                className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800 animate-pulse"
-              >
-                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-              </div>
-            ))}
+          {Array(6).fill(0).map((_, i) => (
+            <div
+              key={i}
+              className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800 animate-pulse"
+            >
+              <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+            </div>
+          ))}
         </div>
       ) : filteredBooks.length === 0 ? (
         <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
           <p className="text-gray-600 dark:text-gray-400">No books found matching your search.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks.map((book) => (
-            <div
-              key={book.id}
-              className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800 hover:shadow-md transition-shadow"
-            >
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{book.title}</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-1">
-                <span className="font-medium">Author:</span> {book.author}
-              </p>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                <span className="font-medium">ISBN:</span> {book.isbn}
-              </p>
-              <div className="flex items-center justify-between">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    book.availability
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                      : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-                  }`}
-                >
-                  {book.availability ? "Available" : "Not Available"}
-                </span>
-                <button
-                  className="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => handleRequest(book.id)}
-                  disabled={!book.availability}
-                >
-                  Request
-                </button>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentBooks.map((book) => (
+              <div
+                key={book.id}
+                className="border border-gray-200 dark:border-gray-700 p-6 rounded-lg shadow-sm bg-white dark:bg-gray-800 hover:shadow-md transition-shadow"
+              >
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{book.title}</h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-1">
+                  <span className="font-medium">Author:</span> {book.author}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <span className="font-medium">ISBN:</span> {book.isbn}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      book.availability
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                        : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
+                    }`}
+                  >
+                    {book.availability ? "Available" : "Not Available"}
+                  </span>
+                  <button
+                    className="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => handleRequest(book.id)}
+                    disabled={!book.availability}
+                  >
+                    Request
+                  </button>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center space-x-4 mt-8">
+              <button
+                onClick={goToPrevPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                Previous
+              </button>
+              
+              <span className="text-gray-700 dark:text-white">
+                Page {currentPage} of {totalPages}
+              </span>
+
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                Next
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   )

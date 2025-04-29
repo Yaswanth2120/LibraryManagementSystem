@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import api from "../../services/api.js"
+import useAuth from '../../context/useAuth.js';
 
 function LibrarianDashboard() {
   const [stats, setStats] = useState({
@@ -11,6 +12,7 @@ function LibrarianDashboard() {
     rejectedRequests: 0,
   })
   const [loading, setLoading] = useState(true)
+  const { name } = useAuth();
   const token = localStorage.getItem("token")
 
   useEffect(() => {
@@ -49,7 +51,7 @@ function LibrarianDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-          <span className="mr-2">📚</span> Librarian Dashboard
+          <span className="mr-2">📚</span> { name }
         </h1>
         <p className="mt-2 text-gray-600 dark:text-gray-400">
           Welcome back! Here's an overview of your library's current status.
@@ -99,7 +101,7 @@ function LibrarianDashboard() {
               <span className="mr-2">📋</span> View All Requests
             </button>
           </Link>
-          <Link to="/books">
+          <Link to="/admin/books">
             <button className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
               <span className="mr-2">📚</span> Manage Books
             </button>

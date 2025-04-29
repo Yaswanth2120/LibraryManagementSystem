@@ -2,7 +2,7 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import { DB_CONFIG } from '../config/db.config.js';
-import UserModel from './user.js'; // import more models as you add them
+import UserModel from './user.js';
 import BookModel from './book.js';
 import BorrowRequestModel from './borrowrequest.js';
 
@@ -21,18 +21,19 @@ const sequelize = new Sequelize(
 );
 
 // Initialize models
-const db = {};
+const db = {
+  Sequelize,
+  sequelize,
+  User: UserModel(sequelize, Sequelize.DataTypes),
+  Book: BookModel(sequelize, Sequelize.DataTypes),
+  BorrowRequest: BorrowRequestModel(sequelize, Sequelize.DataTypes),
+};
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
-db.User = UserModel(sequelize, Sequelize.DataTypes); // initialize User
-
-db.Book = BookModel(sequelize, Sequelize.DataTypes);
-
-db.BorrowRequest = BorrowRequestModel(sequelize, Sequelize.DataTypes); 
-
-// Future model associations can go here
-// ex: db.Book.belongsTo(db.User);
+// Set up associations
+Object.values(db).forEach(model => {
+  if (model?.associate) {
+    model.associate(db);
+  }
+});
 
 export default db;
