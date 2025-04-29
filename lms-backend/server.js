@@ -38,7 +38,7 @@ sequelize.authenticate()
 
     // Start server after DB connection
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server successfully running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
@@ -56,5 +56,5 @@ app.use('/api/admin', adminRoutes);
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('LibriSys API is running...');
+  res.send('LibriSys API is running....');
 });
