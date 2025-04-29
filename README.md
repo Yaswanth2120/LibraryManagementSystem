@@ -51,7 +51,7 @@ npm install
 
 Create a .env file inside lms-backend/ folder:
 
-```bash
+```env
 DB_NAME=libriSys_DB
 DB_USER=your_mysql_username
 DB_PASSWORD=your_mysql_password
